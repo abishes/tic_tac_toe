@@ -1,3 +1,4 @@
+#include <iostream>
 #include <graphics.h>
 #define Whight 750
 #define Lbox 200 //length of any 9 boxes
@@ -22,6 +23,7 @@ class player{
 public:
     player(short int x):playerNo(x){}
     void draw(){
+        setlinestyle(SOLID_LINE,0,5);
         if(playerNo==1){
             setcolor(LIGHTRED);
             line(x-57, y-57, x+57, y+57);
@@ -207,7 +209,7 @@ public:
     }
 
 };
-void button(){
+void buttons(){
     setcolor(LIGHTCYAN);
     rectangle(Whight/2+325, Whight/2, Whight/2+500, Whight/2+100);
     outtextxy(Whight/2+350, Whight/2+30, (char*)"Again");
@@ -227,12 +229,13 @@ int buttonfun(){
 }
 int main(void)
 {
-    int x,y;
+    proto *gamelook;
+    player *p1, *p2;
     initwindow(Whight+300,Whight,"Tic Tac Toe");
     while(1){
-        proto *gamelook= new proto;
-        player *p1= new player((short)1);
-        player *p2=new player((short)2);
+        gamelook=new proto;
+        p1= new player((short)1);
+        p2= new player((short)2);
         while(1){
             if(C%2==0)
                 p1->onclick();
@@ -241,7 +244,7 @@ int main(void)
             if(C==9)
                 break;
         }
-        button();
+        buttons();
         while(1){
             int buttonsays=buttonfun();
             if(buttonsays==0)
@@ -249,15 +252,15 @@ int main(void)
             else if(buttonsays=1)
                 break;
         }
-        setfillstyle(SOLID_FILL, BLACK);
-        floodfill(5,5,BROWN);
         delete gamelook;
         delete p1;
         delete p2;
         C=0;
         for(int i=0;i<9;i++)
             check[i]=0;
+            setfillstyle(SOLID_FILL, BLACK);
+        floodfill(5,5,BROWN);//no boundary with brown color, so all screen will be painted
+        printf("");//I don't know why it is needed
     }
-    getch();
     closegraph();
 }
