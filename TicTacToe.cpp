@@ -35,12 +35,18 @@ public:
         }
     }
     void onclick(){
+        int w;
         while(!ismouseclick(WM_LBUTTONDOWN))
             delay(500);
         getmouseclick(WM_LBUTTONDOWN, x, y);
         if(!whichbox())//whichbox determines which box is clicked and returns 1 if the box is not repeated otherwise 0
             return ;
         draw();
+        if(C>=5)
+            w=checkwin();
+            if(w==0)
+                return;
+            drawwin(w);
     }
     bool whichbox(){
         if(x>(Whight/2-(Lbox*3)/2) && x<(Whight/2-Lbox/2)){
@@ -123,6 +129,59 @@ public:
                 win[8]=playerNo;
                 return 1;
             }
+        }
+    }
+    int checkwin(){
+        if     (win[0] && win[1] && win[2]) //win by row 1
+            return 1;
+        else if(win[3] && win[4] && win[5]) // win by row 2
+            return 2;
+        else if(win[6] && win[7] && win[8]) //win by row 3
+            return 3;
+        else if(win[0] && win[3] && win[6]) //win by col 1
+            return 4;
+        else if(win[1] && win[4] && win[7]) //win by col 2
+            return 5;
+        else if(win[2] && win[5] && win[8]) //win by col 3
+            return 6;
+        else if(win[0] && win[4] && win[8]) // win by diagonal from left
+            return 7;
+        else if(win[2] && win[4] && win[6]) // win by diagonal fron right
+            return 8;
+        else
+            return 0;
+
+    }
+    void drawwin(int x){
+        C=9;
+        setlinestyle(SOLID_LINE, 0, 5);
+        setcolor(WHITE);
+        switch(x){
+            case 1:
+                line(Whight/2 - Lbox, Whight/2 - Lbox, Whight/2 + Lbox, Whight/2 - Lbox);
+                break;
+            case 2:
+                line(Whight/2 - Lbox, Whight/2, Whight/2 + Lbox, Whight/2);
+                break;
+            case 3:
+                line(Whight/2 - Lbox, Whight/2 + Lbox, Whight/2 + Lbox, Whight/2 + Lbox);
+                break;
+            case 4:
+                line(Whight/2 - Lbox, Whight/2 - Lbox, Whight/2 - Lbox, Whight/2 + Lbox);
+                break;
+            case 5:
+                line(Whight/2, Whight/2 - Lbox, Whight/2, Whight/2 + Lbox);
+                break;
+            case 6:
+                line(Whight/2 + Lbox, Whight/2 - Lbox, Whight/2 + Lbox, Whight/2 + Lbox);
+                break;
+            case 7:
+                line(Whight/2 - Lbox, Whight/2 - Lbox, Whight/2 + Lbox, Whight/2 + Lbox);
+                break;
+            case 8:
+
+                line(Whight/2 + Lbox, Whight/2 - Lbox, Whight/2 - Lbox, Whight/2 + Lbox);
+                break;
         }
     }
 };
