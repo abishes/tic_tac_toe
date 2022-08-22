@@ -1,4 +1,3 @@
-#include <iostream>
 #include <graphics.h>
 #define Whight 750
 #define Lbox 200 //length of any 9 boxes
@@ -8,6 +7,7 @@ class proto{
 public:
     proto(){
         setlinestyle(SOLID_LINE, 0, 5);
+        setcolor(WHITE);
         rectangle(Whight/2-(Lbox*3)/2, Whight/2-(Lbox*3)/2, Whight/2+(Lbox*3)/2, Whight/2+(Lbox*3)/2);
         line(Whight/2-Lbox/2, Whight/2-(Lbox*3)/2, Whight/2-Lbox/2, Whight/2+(Lbox*3)/2);
         line(Whight/2+Lbox/2, Whight/2-(Lbox*3)/2, Whight/2+Lbox/2, Whight/2+(Lbox*3)/2);
@@ -44,9 +44,14 @@ public:
         draw();
         if(C>=5)
             w=checkwin();
+            if(w==0 && C==9){
+                winbroadcast(0);
+                return;
+            }
             if(w==0)
                 return;
             drawwin(w);
+            winbroadcast(1);
     }
     bool whichbox(){
         if(x>(Whight/2-(Lbox*3)/2) && x<(Whight/2-Lbox/2)){
@@ -130,6 +135,7 @@ public:
                 return 1;
             }
         }
+        return 0;
     }
     int checkwin(){
         if     (win[0] && win[1] && win[2]) //win by row 1
@@ -184,20 +190,73 @@ public:
                 break;
         }
     }
+    void winbroadcast(bool x){ //x=1 is win, x=0 id draw
+        settextstyle(SANS_SERIF_FONT,0, 5);
+        if(x){
+            if(playerNo==1){
+                setcolor(LIGHTRED);
+                outtextxy(Whight/2+325, Whight/2-100, (char*)"Player X wins");
+                return;
+            }
+            setcolor(LIGHTGREEN);
+            outtextxy(Whight/2+325, Whight/2-100,(char*) "Player O wins");
+            return;
+        }
+        setcolor(WHITE);
+        outtextxy(Whight/2+325, Whight/2-100,(char*) "No One wins");
+    }
+
 };
+void button(){
+    setcolor(LIGHTCYAN);
+    rectangle(Whight/2+325, Whight/2, Whight/2+500, Whight/2+100);
+    outtextxy(Whight/2+350, Whight/2+30, (char*)"Again");
+    rectangle(Whight/2+325, Whight/2+150, Whight/2+500, Whight/2+250);
+    outtextxy(Whight/2+350, Whight/2+180, (char*)"Quit");
+}
+int buttonfun(){
+    int px,py;
+    while(!ismouseclick(WM_LBUTTONDOWN))
+            delay(500);
+    getmouseclick(WM_LBUTTONDOWN, px, py);
+    if((px>Whight/2+325 && px<Whight/2+500) && (py>Whight/2 && py< Whight/2+100))
+        return 1; //if button Again is pressed
+    if((px>Whight/2+325 && px<Whight/2+500)&&(py>Whight/2+150 && py<Whight/2+250))
+        return 0;
+    return -1;
+}
 int main(void)
 {
     int x,y;
     initwindow(Whight+300,Whight,"Tic Tac Toe");
-    proto gameLook;
-    player p1((short)1), p2((short)2);
     while(1){
-        if(C%2==0)
-            p1.onclick();
-        else
-            p2.onclick();
-        if(C==9)
-            break;
+        proto *gamelook= new proto;
+        player *p1= new player((short)1);
+        player *p2=new player((short)2);
+        while(1){
+            if(C%2==0)
+                p1->onclick();
+            else
+                p2->onclick();
+            if(C==9)
+                break;
+        }
+        button();
+        while(1){
+            int buttonsays=buttonfun();
+            if(buttonsays==0)
+                return 1;
+            else if(buttonsays=1)
+                break;
+        }
+        setfillstyle(SOLID_FILL, BLACK);
+        floodfill(5,5,BROWN);
+        delete gamelook;
+        delete p1;
+        delete p2;
+        C=0;
+        for(int i=0;i<9;i++)
+            check[i]=0;
     }
     getch();
     closegraph();
