@@ -1,4 +1,3 @@
-#include <iostream>
 #include <graphics.h>
 #define Whight 750
 #define Lbox 200 //length of any 9 boxes
@@ -44,7 +43,7 @@ public:
         if(!whichbox())//whichbox determines which box is clicked and returns 1 if the box is not repeated otherwise 0
             return ;
         draw();
-        if(C>=5)
+        if(C>=5){
             w=checkwin();
             if(w==0 && C==9){
                 winbroadcast(0);
@@ -54,6 +53,7 @@ public:
                 return;
             drawwin(w);
             winbroadcast(1);
+        }
     }
     bool whichbox(){
         if(x>(Whight/2-(Lbox*3)/2) && x<(Whight/2-Lbox/2)){
@@ -249,7 +249,7 @@ int main(void)
             int buttonsays=buttonfun();
             if(buttonsays==0)
                 return 1;
-            else if(buttonsays=1)
+            else if(buttonsays==1)
                 break;
         }
         delete gamelook;
@@ -258,9 +258,8 @@ int main(void)
         C=0;
         for(int i=0;i<9;i++)
             check[i]=0;
-            setfillstyle(SOLID_FILL, BLACK);
+        setfillstyle(SOLID_FILL, BLACK);
         floodfill(5,5,BROWN);//no boundary with brown color, so all screen will be painted
-        printf("");//I don't know why it is needed
     }
     closegraph();
 }
